@@ -16,9 +16,6 @@ export default class TaskDetail extends Component {
     returnData(title, description) {
         this.setState({ title: title, description: description });
     }
-    componentDidUpdate() {
-
-    }
     _back = () => {
         this.props.navigation.state.params.returnData(this.state.title, this.state.description);
         this.props.navigation.goBack();
