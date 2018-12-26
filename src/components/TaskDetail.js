@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
 
 export default class TaskDetail extends Component {
     static navigationOptions = {
@@ -7,24 +7,21 @@ export default class TaskDetail extends Component {
     }
     constructor(props) {
         super(props);
-        // const data = this.props.navigation.getParam('data', {})
+        const data = this.props.navigation.getParam('data', {})
         this.state = {
-            title:'',
-            description: '',
+            title: data.title,
+            description: data.description,
         };
     }
     returnData(title, description) {
         this.setState({ title: title, description: description });
     }
     componentDidUpdate() {
-        this.props.navigation.state.params.returnData(this.state.title, this.state.description);
+
     }
-    componentDidMount() {
-        const data = this.props.navigation.getParam('data', {})
-        this.setState({
-            title: data.title,
-            description: data.description,
-        });
+    _back = () => {
+        this.props.navigation.state.params.returnData(this.state.title, this.state.description);
+        this.props.navigation.goBack();
     }
     render() {
         console.log('TaskDetail')
@@ -40,6 +37,10 @@ export default class TaskDetail extends Component {
                     })
                 }}> {this.state.title} </Text>
                 <Text> {this.state.description} </Text>
+                <Button
+                    title='Back'
+                    onPress={() => { this._back() }}
+                />
             </View>
         );
     }

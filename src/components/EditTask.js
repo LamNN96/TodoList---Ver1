@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 
 export default class EditTask extends Component {
@@ -18,7 +18,14 @@ export default class EditTask extends Component {
         })
     }
     componentDidUpdate() {
+        // this.props.navigation.state.params.returnData(this.state.title, this.state.description);
+    }
+    componentWillUnmount() {
+
+    }
+    _back = () => {
         this.props.navigation.state.params.returnData(this.state.title, this.state.description);
+        this.props.navigation.goBack();
     }
     render() {
         console.log('edit')
@@ -48,6 +55,10 @@ export default class EditTask extends Component {
                         })
                     }}
                 ></TextInput>
+                <Button
+                    title='Back'
+                    onPress={() => { this._back() }}
+                />
             </View>
         );
     }

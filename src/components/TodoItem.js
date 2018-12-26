@@ -5,7 +5,7 @@ export default class TodoItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: {},
+            data: this.props.item,
             isSelected: false,
             index: this.props.index
         };
@@ -22,11 +22,6 @@ export default class TodoItem extends Component {
         }
         this.setState({ data: { title: title, description: description } });
         this.props.handleData(data, this.state.index);
-    }
-    componentDidMount() {
-        this.setState({
-            data: this.props.item,
-        });
     }
 
     render() {
