@@ -1,21 +1,36 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableWithoutFeedback, StyleSheet, CheckBox } from 'react-native';
+import { View, Text, TouchableWithoutFeedback } from 'react-native';
 
 export default class TodoItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: this.props.item,
-            isSelected: false
+            data: {},
+            isSelected: false,
+            index: this.props.index
         };
     }
 
     _onItemClick() {
-        //TODO: navigate to details with props = 'data'
-        this.props.navigation.navigate('Detail', { data: this.props.item })
+        this.props.navigation.navigate('Detail', { data: this.state.data, returnData: this.returnData.bind(this) })
+    }
+
+    returnData(title, description) {
+        let data = {
+            title: title,
+            description: description
+        }
+        this.setState({ data: { title: title, description: description } });
+        this.props.handleData(data, this.state.index);
+    }
+    componentDidMount() {
+        this.setState({
+            data: this.props.item,
+        });
     }
 
     render() {
+        console.log('TodoItem')
         return (
             <TouchableWithoutFeedback onPress={() => { this._onItemClick() }}>
                 <View style={{

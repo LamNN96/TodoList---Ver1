@@ -3,26 +3,25 @@ import { View, Text, Dimensions, FlatList, StyleSheet, TouchableOpacity, TextInp
 import TodoItem from './TodoItem';
 import Modal from 'react-native-modalbox';
 import Button from 'react-native-button';
-import DateTimePicker from 'react-native-modal-datetime-picker';
 var screen = Dimensions.get('window');
 export default class TodoList extends Component {
-    static navigationOptions  = {
-        title : 'Todo List'
+    static navigationOptions = {
+        title: 'Todo List'
     }
     constructor(props) {
         super(props);
+        this.dataFromItem = this.dataFromItem.bind(this);
         this.state = {
             isDateTimePickerVisible: false,
             data: [{
                 'title': 'Task 1',
                 'description': 'Desc 1',
-                'date': '2013/12/12'
             }],
             item: {
                 title: '',
                 description: '',
-                date: ''
-            }
+            },
+            isAdding: false
         };
     }
 
@@ -33,16 +32,16 @@ export default class TodoList extends Component {
     _onButtonAdd = () => {
         let newData = this.state.data;
         newData.push(this.state.item);
-        this.setState({
-            data: newData
-        }
+        this.setState(
+            {
+                data: newData
+            }
         )
         this.refs.addModal.close();
         this.setState({
             item: {
                 title: '',
                 description: '',
-                date: ''
             }
         })
     }
@@ -50,23 +49,17 @@ export default class TodoList extends Component {
     showAddModal = () => {
         this.refs.addModal.open();
     }
-    _showDateTimePicker = () => {
-        console.log('show date picker')
-        this.setState({ isDateTimePickerVisible: true });
+
+    dataFromItem(data, index) {
+        let newData = this.state.data;
+        newData[index] = data;
+        this.setState({
+            data: newData
+        })
     }
 
-    _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
-
-    _handleDatePicked = (date) => {
-        console.log('A date has been picked: ', date);
-        this._hideDateTimePicker();
-    };
-    componentDidUpdate() {
-        if (this.state.isAdding) {
-            this.refs.input.focus();
-        }
-    }
     render() {
+        console.log('list')
         return (
             <View style={{ flex: 1 }}>
                 <View style={styles.buttonAddContainer}>
@@ -84,10 +77,11 @@ export default class TodoList extends Component {
                                 ({ item, index }) => {
                                     return (
                                         <TodoItem
-                                         item={item} 
-                                         index={index} 
-                                         parent={this} 
-                                         navigation = {this.props.navigation}/>
+                                            item={item}
+                                            index={index}
+                                            parent={this}
+                                            handleData={this.dataFromItem}
+                                            navigation={this.props.navigation} />
                                     )
                                 }
                             }
@@ -115,8 +109,9 @@ export default class TodoList extends Component {
                         textAlign: 'center',
                     }}>Add Task</Text>
                     <TextInput
-                        ref='inputTitle'
-                        // onSubmitEditing={() => this.refs.inputD}
+                        ref={'inputTitle'}
+                        autoFocus={true}
+                        onSubmitEditing={() => this.refs.inputDescription.focus()}
                         style={{
                             marginStart: 10,
                             marginEnd: 10,
@@ -140,13 +135,14 @@ export default class TodoList extends Component {
                     </TextInput>
 
                     <TextInput
-                        ref='inputDescription'
+                        ref={'inputDescription'}
                         style={{
                             marginStart: 10,
                             marginEnd: 10,
                             borderBottomColor: 'gray',
                             borderBottomWidth: 1
                         }}
+
                         placeholder="Enter description..."
                         value={this.state.item.description}
                         onChangeText={(text) => {
@@ -162,17 +158,6 @@ export default class TodoList extends Component {
                         }}
                     >
                     </TextInput>
-
-                    <View style={{ flex: 1, marginLeft: 10, marginTop: 10 }}>
-                        <TouchableOpacity onPress={this._showDateTimePicker}>
-                            <Text>Show DatePicker</Text>
-                        </TouchableOpacity>
-                        <DateTimePicker
-                            isVisible={this.state.isDateTimePickerVisible}
-                            onConfirm={this._handleDatePicked}
-                            onCancel={this._hideDateTimePicker}
-                        />
-                    </View>
 
                     <Button
                         style={{ fontSize: 16, color: 'white' }}
